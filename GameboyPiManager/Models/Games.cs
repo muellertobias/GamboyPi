@@ -15,6 +15,7 @@ namespace GameboyPiManager.Models
         public VideogameConsole(String Name)
         {
             this.Name = Name;
+            this.VideogameList = new List<Videogame>();
         }
 
         public void Add(Videogame game)
@@ -30,7 +31,7 @@ namespace GameboyPiManager.Models
 
     public class Videogame
     {
-        public String Name { get; private set; }
+        public String Name { get; set; }
 
         public Videogame(String Name)
         {
