@@ -114,12 +114,18 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Models\Interfaces\" />
+    <Folder Include="Resources\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\WPFUtilities\WPFUtilities.csproj">
       <Project>{d1bc910a-e242-4b29-a73a-ad43d09b2d80}</Project>
       <Name>WPFUtilities</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="README.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -17,13 +17,15 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <TextBox Text="{Binding NewVideogameName}" />
+        <Grid Background="LightBlue" AllowDrop="True" Drop="DropzoneDrop" DragEnter="DropzoneDragEnter">
+            <Label Content="Drop Zone" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        </Grid>
         <Button Content="Add Game" Command="{Binding AddVideogameCommand}" Grid.Column="1"/>
 
-        <ListBox ItemsSource="{Binding GamesVMs}" Grid.Row="1" Grid.ColumnSpan="2" AllowDrop="True" Drop="ListBox_Drop" DragEnter="ListBox_DragEnter">
+        <ListBox ItemsSource="{Binding GamesVMs}" Grid.Row="1" Grid.ColumnSpan="2">
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type viewModels:VideogameViewModel}">
-                    <Border BorderBrush="Black" BorderThickness="1" Background="BurlyWood">
+                    <Border BorderBrush="Black" BorderThickness="1" Background="BurlyWood" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                         <TextBlock Text="{Binding Name}"/>
                     </Border>
                 </DataTemplate>

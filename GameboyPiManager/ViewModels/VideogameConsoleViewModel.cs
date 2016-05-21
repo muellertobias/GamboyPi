@@ -50,6 +50,14 @@ namespace GameboyPiManager.ViewModels
             AddVideogameCommand = new Command(consoleVM => addVideogame(consoleVM));
         }
 
+        public void LoadNewVideogames(String[] paths)
+        {
+            foreach (String p in paths)
+            {
+                GamesVMs.Add(new VideogameViewModel(new Videogame(p)));
+            }
+        }
+
         private void addVideogame(object consoleVM)
         {
             if (consoleVM != null)
