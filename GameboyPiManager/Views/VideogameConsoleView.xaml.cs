@@ -30,7 +30,7 @@ namespace GameboyPiManager.Views
             //var m = new VideogameConsole("Super Nintendo");
             //m.VideogameList.Add(new Videogame("The Legend of Zelda"));
             //m.VideogameList.Add(new Videogame("Super Mario"));
-            this.DataContext = new VideogameConsoleViewModel(b.Consoles.First(c => c.Name == "\\\\GAMEBOYPI\\ROMS\\snes"));
+            this.DataContext = new VideogameConsoleViewModel(b.Consoles.First(c => c.Name == "\\\\GAMEBOYPI\\roms\\snes"));
         }
 
         private void DropzoneDrop(object sender, DragEventArgs e)
