@@ -26,29 +26,6 @@ namespace GameboyPiManager.Views
         public VideogameConsoleView()
         {
             InitializeComponent();
-            Gameboy b = new Gameboy("GAMEBOYPI");
-            //var m = new VideogameConsole("Super Nintendo");
-            //m.VideogameList.Add(new Videogame("The Legend of Zelda"));
-            //m.VideogameList.Add(new Videogame("Super Mario"));
-            this.DataContext = new VideogameConsoleViewModel(b.Consoles.First(c => c.Name == "\\\\GAMEBOYPI\\roms\\snes"));
-        }
-
-        private void DropzoneDrop(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop, true))
-            {
-                var paths = e.Data.GetData(DataFormats.FileDrop, true) as string[];
-                var viewModel = DataContext as VideogameConsoleViewModel;
-                viewModel.LoadNewVideogames(paths);
-            }
-        }
-
-        private void DropzoneDragEnter(object sender, DragEventArgs e)
-        {
-            if (!e.Data.GetDataPresent(DataFormats.FileDrop, true))
-            {
-                e.Effects = DragDropEffects.Move;
-            }
         }
     }
 }

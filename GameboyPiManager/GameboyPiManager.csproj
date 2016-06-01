@@ -56,6 +56,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\Factories\FileEndingsFactory.cs" />
+    <Compile Include="Models\Videogame.cs" />
     <Compile Include="ViewModels\GameboyViewModel.cs" />
     <Compile Include="ViewModels\VideogameConsoleViewModel.cs" />
     <Compile Include="ViewModels\VideogameViewModel.cs" />
@@ -88,7 +90,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\Gameboy.cs" />
-    <Compile Include="Models\Games.cs" />
+    <Compile Include="Models\VideogameConsole.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

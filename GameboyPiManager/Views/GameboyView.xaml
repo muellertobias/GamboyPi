@@ -7,9 +7,18 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <TreeView>
-            <TreeViewItem>Hallo</TreeViewItem>
-            <TreeViewItem>Schatzi</TreeViewItem>
-        </TreeView>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Background="LightBlue" AllowDrop="True" Drop="DropzoneDrop" DragEnter="DropzoneDragEnter" >
+            <Label Content="Drop Zone" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        </Grid>
+        
     </Grid>
 </UserControl>

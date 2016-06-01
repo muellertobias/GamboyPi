@@ -16,30 +16,51 @@ namespace GameboyPiManager.Models
         public String Name { get; private set; }
         private String gameboyAccessStr;
 
+        #region Constructor
         public Gameboy(String Name)
         {
             this.Name = Name;
-            gameboyAccessStr = ConfigurationManager.AppSettings.Get("SambaAccess") + Name + ConfigurationManager.AppSettings.Get("ROMsDir");
+            gameboyAccessStr = createAccessString();
             this.Consoles = new List<VideogameConsole>();
-            loadVideogameConsoles();
+            load();
+        }
+        #endregion
+
+        private String createAccessString()
+        {
+            return ConfigurationManager.AppSettings.Get("SambaAccess") + Name + ConfigurationManager.AppSettings.Get("ROMsDir");
+        }
+
+        private void load()
+        {
+            try
+            {
+                loadVideogameConsoles();
+            }
+            catch (IOException)
+            {
+                
+            }
         }
 
         private void loadVideogameConsoles()
         {
-            try
+            var directories = Directory.EnumerateDirectories(gameboyAccessStr);
+            foreach (String directory in directories)
             {
-                var dirs = Directory.EnumerateDirectories(gameboyAccessStr);
-                foreach (String str in dirs)
+                this.Consoles.Add(new VideogameConsole(directory));
+            }
+        }
+
+        public void UploadFile(string path)
+        {
+            foreach (VideogameConsole console in Consoles)
+            {
+                if (console.checkFile(path))
                 {
-                    //Console.Out.WriteLine(str);
-                    this.Consoles.Add(new VideogameConsole(str));
+                    return;
                 }
             }
-            catch (IOException)
-            {
-
-            }
-            
         }
     }
 }
