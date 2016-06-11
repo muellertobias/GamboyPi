@@ -36,7 +36,7 @@ namespace GameboyPiManager.ViewModels
             foreach (String path in paths)
             {
                 Model.UploadFile(path);
-                GamesVMs.Add(new VideogameViewModel(new Videogame(path)));
+                //ConsolesVMs.Add();
             }
         }
     }

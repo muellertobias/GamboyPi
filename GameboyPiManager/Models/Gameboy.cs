@@ -6,15 +6,16 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GameboyPiManager.Models.Interfaces;
 
 namespace GameboyPiManager.Models
 {
-    public class Gameboy
+    public class Gameboy : IGameboy, IUploadFile
     {
         public List<VideogameConsole> Consoles { get; private set; }
 
-        public String Name { get; private set; }
-        private String gameboyAccessStr;
+        public string Name { get; set; }
+        private string gameboyAccessStr;
 
         #region Constructor
         public Gameboy(String Name)
@@ -26,7 +27,7 @@ namespace GameboyPiManager.Models
         }
         #endregion
 
-        private String createAccessString()
+        private string createAccessString()
         {
             return ConfigurationManager.AppSettings.Get("SambaAccess") + Name + ConfigurationManager.AppSettings.Get("ROMsDir");
         }
@@ -58,6 +59,7 @@ namespace GameboyPiManager.Models
             {
                 if (console.checkFile(path))
                 {
+                    console.UploadFile(path);
                     return;
                 }
             }

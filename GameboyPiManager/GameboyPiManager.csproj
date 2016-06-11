@@ -56,7 +56,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Models\Factories\FileEndingsFactory.cs" />
+    <Compile Include="Models\Factories\FileExtensionsFactory.cs" />
+    <Compile Include="Models\Factories\IAccessKeyFactory.cs" />
+    <Compile Include="Models\Factories\SambaAccessKeyFactory.cs" />
+    <Compile Include="Models\Interfaces\IGameboy.cs" />
+    <Compile Include="Models\Interfaces\IUploadFile.cs" />
     <Compile Include="Models\Videogame.cs" />
     <Compile Include="ViewModels\GameboyViewModel.cs" />
     <Compile Include="ViewModels\VideogameConsoleViewModel.cs" />
@@ -118,7 +122,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Models\Interfaces\" />
     <Folder Include="Resources\" />
   </ItemGroup>
   <ItemGroup>

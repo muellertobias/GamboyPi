@@ -5,27 +5,23 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.IO;
-
+using GameboyPiManager.Models.Factories;
+using GameboyPiManager.Models.Interfaces;
 
 namespace GameboyPiManager.Models
 {
-    public class VideogameConsole
+    public class VideogameConsole : IUploadFile
     {
         public String Name { get; private set; }
         public List<Videogame> VideogameList { get; private set; }
 
-        private List<String> FileEndings;
+        private FileExtensions FileExtensions;
 
         public VideogameConsole(String path)
         {
             this.Name = extractName(path);
-            loadFileEnding();
+            FileExtensions = FileExtensionsFactory.Instance.GetFileExtensions(Name);
             loadVideogames();
-        }
-
-        private void loadFileEnding()
-        {
-            throw new NotImplementedException();
         }
 
         private void loadVideogames()
@@ -54,7 +50,20 @@ namespace GameboyPiManager.Models
             return path.Split('\\').Last();
         }
 
-        internal bool checkFile(string path)
+        public bool checkFile(string path)
+        {
+            foreach (String fileEnd in FileExtensions)
+            {
+                if (path.Split('.').Last().Equals(fileEnd))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public void UploadFile(string path)
         {
             throw new NotImplementedException();
         }
