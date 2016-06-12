@@ -13,6 +13,11 @@ namespace GameboyPiManager.ViewModels
 {
     public class VideogameConsoleViewModel : ViewModel<VideogameConsole>
     {
+        public String Name
+        {
+            get { return Model.Name; }
+        }
+
         private String newVideogameName;
         public String NewVideogameName
         {

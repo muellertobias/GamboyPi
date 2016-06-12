@@ -11,8 +11,13 @@ namespace GameboyPiManager.ViewModels
 {
     public class GameboyViewModel : ViewModel<Gameboy>
     {
-        private ObservableCollection<VideogameConsoleViewModel> consolesVMs;
+        public VideogameConsoleViewModel SelectedVideogameConsole
+        {
+            get;
+            set;
+        }
 
+        private ObservableCollection<VideogameConsoleViewModel> consolesVMs;
         public ObservableCollection<VideogameConsoleViewModel> ConsolesVMs
         {
             get { return consolesVMs; }
@@ -26,17 +31,36 @@ namespace GameboyPiManager.ViewModels
             }
         }
 
+        private ObservableCollection<VideogameConsoleViewModel> searchedConsolesVMs;
+        public ObservableCollection<VideogameConsoleViewModel> SearchedConsolesVMs
+        {
+            get { return searchedConsolesVMs; }
+            private set
+            {
+                if (SearchedConsolesVMs != value)
+                {
+                    searchedConsolesVMs = value;
+                    this.OnPropertyChanged("SearchedConsolesVMs");
+                }
+            }
+        }
+
         public GameboyViewModel(Gameboy model) 
             : base(model)
         {
+            ConsolesVMs = new ObservableCollection<VideogameConsoleViewModel>();
+            foreach (VideogameConsole consoleModel in Model.Consoles.Values)
+            {
+                ConsolesVMs.Add(new VideogameConsoleViewModel(consoleModel));
+            }
         }
 
-        public void UploadFiles(string[] paths)
+        public void UploadFiles(string[] filepaths)
         {
-            foreach (String path in paths)
+            foreach (String filepath in filepaths)
             {
-                Model.UploadFile(path);
-                //ConsolesVMs.Add();
+                List<string> consoleNames = Model.FindConsole(filepath);
+                SearchedConsolesVMs = new ObservableCollection<VideogameConsoleViewModel>(ConsolesVMs.Where(c => consoleNames.Contains(c.Name)));
             }
         }
     }

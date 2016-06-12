@@ -10,6 +10,8 @@ namespace GameboyPiManager.Models.Factories
 {
     public class SambaAccessKeyFactory : IAccessKeyFactory
     {
+        private IDevice device;
+
         #region Singleton
         private static IAccessKeyFactory instance;
         private static object padLock = new object();
@@ -34,10 +36,22 @@ namespace GameboyPiManager.Models.Factories
         private SambaAccessKeyFactory() { }
         #endregion
 
-        private IGameboy gameboy;
+        public void SetDevice(IDevice gameboy)
+        {
+            if (gameboy == null)
+            {
+                throw new ArgumentNullException();
+            }
+            this.device = gameboy;
+        }
+
         public string GetAccessKey()
         {
-            return ConfigurationManager.AppSettings.Get("SambaAccess") + gameboy.Name + ConfigurationManager.AppSettings.Get("ROMsDir");
+            if (device == null)
+            {
+                throw new InvalidOperationException("Gerät wurde nicht spezifiziert. Es ist kein Zugriff möglich!");
+            }
+            return ConfigurationManager.AppSettings.Get("SambaAccess") + device.Name + ConfigurationManager.AppSettings.Get("ROMsDir");
         }
 
         public string GetAccessKey(string path)

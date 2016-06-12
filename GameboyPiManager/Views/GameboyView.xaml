@@ -5,20 +5,39 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GameboyPiManager.Views"
              mc:Ignorable="d" 
+             xmlns:viewModels="clr-namespace:GameboyPiManager.ViewModels"
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-
-        <Grid Background="LightBlue" AllowDrop="True" Drop="DropzoneDrop" DragEnter="DropzoneDragEnter" >
-            <Label Content="Drop Zone" HorizontalAlignment="Center" VerticalAlignment="Center" />
-        </Grid>
-        
+        <TabControl Grid.Row="1">
+            <TabItem Header="Übersicht">
+                <TreeView ItemsSource="{Binding ConsolesVMs}">
+                    <TreeView.ItemTemplate>
+                        <HierarchicalDataTemplate ItemsSource="{Binding GamesVMs}">
+                            <TextBlock Text="{Binding Name}"/>
+                        </HierarchicalDataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>
+            </TabItem>
+            <TabItem Header="Spiel hinzufügen">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Background="LightBlue" AllowDrop="True" Drop="DropzoneDrop" DragEnter="DropzoneDragEnter" >
+                        <Label Content="Drop Zone" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Grid>
+                    <ListBox ItemsSource="{Binding SearchedConsolesVMs}" Grid.Row="2">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type viewModels:VideogameConsoleViewModel}">
+                                <Border BorderBrush="Black" BorderThickness="1" Background="BurlyWood" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                    <TextBlock Text="{Binding Name}"/>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </TabItem>
+        </TabControl>
     </Grid>
 </UserControl>

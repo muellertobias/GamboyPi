@@ -15,23 +15,39 @@ namespace GameboyPiManager.Models
         public String Name { get; private set; }
         public List<Videogame> VideogameList { get; private set; }
 
-        private FileExtensions FileExtensions;
+        public FileExtensions FileExtensions { get; private set; }
 
         public VideogameConsole(String path)
         {
             this.Name = extractName(path);
             FileExtensions = FileExtensionsFactory.Instance.GetFileExtensions(Name);
-            loadVideogames();
+            loadVideogamesIfOnline();
         }
 
-        private void loadVideogames()
+        public VideogameConsole(String name, FileExtensions fileExtensions)
         {
+            this.Name = name;
+            this.FileExtensions = fileExtensions;
             this.VideogameList = new List<Videogame>();
+        }
 
-            var files = Directory.EnumerateFiles(this.Name);
-            foreach (String file in files)
+        private void loadVideogamesIfOnline()
+        {
+            try
             {
-                this.VideogameList.Add(new Videogame(file));
+                this.VideogameList = new List<Videogame>();
+
+                string path = SambaAccessKeyFactory.Instance.GetAccessKey(Name);
+
+                var files = Directory.EnumerateFiles(path);
+                foreach (String file in files)
+                {
+                    this.VideogameList.Add(new Videogame(file));
+                }
+            }
+            catch (Exception)
+            {
+
             }
         }
 
@@ -63,9 +79,19 @@ namespace GameboyPiManager.Models
             return false;
         }
 
-        public void UploadFile(string path)
+        public bool UploadFile(string path)
         {
-            throw new NotImplementedException();
+            try
+            {
+                string pathToConsole = SambaAccessKeyFactory.Instance.GetAccessKey(Name);
+                File.Copy(path, pathToConsole);
+                
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

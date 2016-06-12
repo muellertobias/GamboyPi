@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GameboyPiManager.Models.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ namespace GameboyPiManager.Models.Factories
 {
     public interface IAccessKeyFactory
     {
+        void SetDevice(IDevice device);
         string GetAccessKey();
         string GetAccessKey(string path);
     }

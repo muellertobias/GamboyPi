@@ -8,6 +8,6 @@ namespace GameboyPiManager.Models.Interfaces
 {
     public interface IUploadFile
     {
-        void UploadFile(string path);
+        bool UploadFile(string path);
     }
 }

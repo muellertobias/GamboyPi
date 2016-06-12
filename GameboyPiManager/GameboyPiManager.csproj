@@ -121,9 +121,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\WPFUtilities\WPFUtilities.csproj">
       <Project>{d1bc910a-e242-4b29-a73a-ad43d09b2d80}</Project>
@@ -133,7 +131,13 @@
   <ItemGroup>
     <Resource Include="README.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\FileExtensions.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy "$(SolutionDir)\GameboyPiManager\Resources\*.*" "$(TargetDir)" /Y</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

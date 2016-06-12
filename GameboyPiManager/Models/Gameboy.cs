@@ -7,62 +7,76 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GameboyPiManager.Models.Interfaces;
+using GameboyPiManager.Models.Factories;
+using System.Xml;
 
 namespace GameboyPiManager.Models
 {
-    public class Gameboy : IGameboy, IUploadFile
+    public class Gameboy : IDevice
     {
-        public List<VideogameConsole> Consoles { get; private set; }
+        public Dictionary<string, VideogameConsole> Consoles { get; private set; }
 
         public string Name { get; set; }
-        private string gameboyAccessStr;
 
         #region Constructor
         public Gameboy(String Name)
         {
             this.Name = Name;
-            gameboyAccessStr = createAccessString();
-            this.Consoles = new List<VideogameConsole>();
+            SambaAccessKeyFactory.Instance.SetDevice(this);
+            this.Consoles = new Dictionary<string, VideogameConsole>();
             load();
         }
         #endregion
 
-        private string createAccessString()
-        {
-            return ConfigurationManager.AppSettings.Get("SambaAccess") + Name + ConfigurationManager.AppSettings.Get("ROMsDir");
-        }
-
         private void load()
         {
-            try
-            {
-                loadVideogameConsoles();
-            }
-            catch (IOException)
-            {
-                
-            }
+            loadVideogameConsoles();
         }
 
         private void loadVideogameConsoles()
         {
-            var directories = Directory.EnumerateDirectories(gameboyAccessStr);
-            foreach (String directory in directories)
+            try
             {
-                this.Consoles.Add(new VideogameConsole(directory));
-            }
-        }
-
-        public void UploadFile(string path)
-        {
-            foreach (VideogameConsole console in Consoles)
-            {
-                if (console.checkFile(path))
+                string accessKey = SambaAccessKeyFactory.Instance.GetAccessKey();
+                IEnumerable<string> directories;
+                directories = Directory.EnumerateDirectories(accessKey);
+                foreach (string directory in directories)
                 {
-                    console.UploadFile(path);
-                    return;
+                    var videoGameConsole = new VideogameConsole(directory);
+
+                    this.Consoles.Add(videoGameConsole.Name, videoGameConsole);
                 }
             }
+            catch (Exception)
+            {
+                this.Consoles.Clear();
+                IEnumerable<string> consoleNames = FileExtensionsFactory.Instance.GetConsoleNames(String.Empty);
+                foreach (string consoleName in consoleNames)
+                {
+                    var videoGameConsole = new VideogameConsole(consoleName, FileExtensionsFactory.Instance.GetFileExtensions(consoleName));
+                    this.Consoles.Add(videoGameConsole.Name, videoGameConsole);
+                }
+            }
+        }
+        
+        public List<string> FindConsole(string filepath)
+        {
+            string fileExtension = filepath.Split('.').Last().ToLower();
+            List<string> consoleNames = FileExtensionsFactory.Instance.GetConsoleNames(fileExtension) as List<string>;
+            return consoleNames;
+        }
+
+        public bool UploadFileToConsole(string filepath, string consoleName)
+        {
+            try
+            {
+                Consoles[consoleName].UploadFile(filepath);
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

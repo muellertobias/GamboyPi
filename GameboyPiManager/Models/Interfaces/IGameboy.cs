@@ -1,6 +1,6 @@
 ﻿namespace GameboyPiManager.Models.Interfaces
 {
-    public interface IGameboy
+    public interface IDevice
     {
         string Name { get; set; }
     }
