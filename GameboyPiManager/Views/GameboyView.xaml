@@ -6,16 +6,28 @@
              xmlns:local="clr-namespace:GameboyPiManager.Views"
              mc:Ignorable="d" 
              xmlns:viewModels="clr-namespace:GameboyPiManager.ViewModels"
+             xmlns:converter="clr-namespace:WPFUtilities.Converter;assembly=WPFUtilities"
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <converter:IntToVisibilityConverter x:Key="intToVisibilityConverter"/>
+    </UserControl.Resources>
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Menu>
+            <MenuItem Header="{Binding MenuVM.MenuHeader}" ItemsSource="{Binding MenuVM.Childrens}"/>
+        </Menu>
         <TabControl Grid.Row="1">
             <TabItem Header="Übersicht">
-                <TreeView ItemsSource="{Binding ConsolesVMs}">
-                    <TreeView.ItemTemplate>
-                        <HierarchicalDataTemplate ItemsSource="{Binding GamesVMs}">
-                            <TextBlock Text="{Binding Name}"/>
-                        </HierarchicalDataTemplate>
-                    </TreeView.ItemTemplate>
+                <TreeView ItemsSource="{Binding ConsolesVMs}" ItemTemplate="{StaticResource VideogameConsoleTreeViewItem}">
+                    <TreeView.ItemContainerStyle>
+                        <Style TargetType="TreeViewItem">
+                            <Setter Property="Visibility" Value="{Binding GamesVMs.Count, Converter={StaticResource intToVisibilityConverter}}"/>
+                        </Style>
+                    </TreeView.ItemContainerStyle>
                 </TreeView>
             </TabItem>
             <TabItem Header="Spiel hinzufügen">
@@ -23,21 +35,53 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="50"/>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height="25"/>
                     </Grid.RowDefinitions>
-                    <Grid Background="LightBlue" AllowDrop="True" Drop="DropzoneDrop" DragEnter="DropzoneDragEnter" >
-                        <Label Content="Drop Zone" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    <Grid Background="LightGreen" AllowDrop="True" Drop="DropzoneDrop" DragEnter="DropzoneDragEnter" >
+                        <Label Content="Datei hier ablegen" FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Grid>
-                    <ListBox ItemsSource="{Binding SearchedConsolesVMs}" Grid.Row="2">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate DataType="{x:Type viewModels:VideogameConsoleViewModel}">
-                                <Border BorderBrush="Black" BorderThickness="1" Background="BurlyWood" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                    <TextBlock Text="{Binding Name}"/>
-                                </Border>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                    <ListBox ItemsSource="{Binding SearchedConsolesVMs}" SelectedItem="{Binding SelectedVideogameConsole}" ItemTemplate="{StaticResource VideogameConsoleListBoxItem}" Grid.Row="1" HorizontalContentAlignment="Stretch"/>
+                    <Button Content="Hochladen" Command="{Binding UploadCmd}" IsDefault="True" Grid.Row="2"/>
                 </Grid>
             </TabItem>
         </TabControl>
+        <StatusBar Grid.Row="2">
+            <StatusBarItem>
+                <TextBlock Text="{Binding StatusMessage}"/>
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right">
+                <Rectangle x:Name="ConnectionViewer" Height="20" Width="20">
+                    <Rectangle.Style>
+                        <Style TargetType="{x:Type Rectangle}">
+                            <Setter Property="Fill">
+                                <Setter.Value>
+                                    <RadialGradientBrush>
+                                        <RadialGradientBrush.GradientStops>
+                                            <GradientStop Offset="0.0" Color="Crimson"/>
+                                            <GradientStop Offset="5" Color="Black"/>
+                                        </RadialGradientBrush.GradientStops>
+                                    </RadialGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                    <Setter Property="Fill">
+                                        <Setter.Value>
+                                            <RadialGradientBrush>
+                                                <RadialGradientBrush.GradientStops>
+                                                    <GradientStop Offset="0.0" Color="LimeGreen"/>
+                                                    <GradientStop Offset="5" Color="Black"/>
+                                                </RadialGradientBrush.GradientStops>
+                                            </RadialGradientBrush>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Rectangle.Style>
+                </Rectangle>
+            </StatusBarItem>
+            
+        </StatusBar>
     </Grid>
 </UserControl>

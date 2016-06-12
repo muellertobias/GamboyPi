@@ -9,27 +9,33 @@ using System.Threading.Tasks;
 using GameboyPiManager.Models.Interfaces;
 using GameboyPiManager.Models.Factories;
 using System.Xml;
+using System.Net.NetworkInformation;
+using System.Threading;
 
 namespace GameboyPiManager.Models
 {
     public class Gameboy : IDevice
     {
         public Dictionary<string, VideogameConsole> Consoles { get; private set; }
-
+        private Timer PermanentConnectionCheckTimer;
         public string Name { get; set; }
 
+        public bool IsConnected { get; set; }
+
         #region Constructor
-        public Gameboy(String Name)
+        public Gameboy(string Name)
         {
             this.Name = Name;
             SambaAccessKeyFactory.Instance.SetDevice(this);
-            this.Consoles = new Dictionary<string, VideogameConsole>();
             load();
+            PermanentConnectionCheckTimer = new Timer((x) => checkConnection(), null, 1000, 3000);
         }
+
         #endregion
 
         private void load()
         {
+            this.Consoles = new Dictionary<string, VideogameConsole>();
             loadVideogameConsoles();
         }
 
@@ -46,6 +52,7 @@ namespace GameboyPiManager.Models
 
                     this.Consoles.Add(videoGameConsole.Name, videoGameConsole);
                 }
+                IsConnected = true;
             }
             catch (Exception)
             {
@@ -56,6 +63,7 @@ namespace GameboyPiManager.Models
                     var videoGameConsole = new VideogameConsole(consoleName, FileExtensionsFactory.Instance.GetFileExtensions(consoleName));
                     this.Consoles.Add(videoGameConsole.Name, videoGameConsole);
                 }
+                IsConnected = false;
             }
         }
         
@@ -70,13 +78,48 @@ namespace GameboyPiManager.Models
         {
             try
             {
-                Consoles[consoleName].UploadFile(filepath);
+                IsConnected = Consoles[consoleName].UploadFile(filepath);
             }
             catch
             {
                 return false;
             }
             return true;
+        }
+
+
+        private Action<bool> onConnectionChanged;
+        public void SetOnConnectionChanged(Action<bool> action)
+        {
+            this.onConnectionChanged = action;
+        }
+
+        private void checkConnection()
+        {
+            if (onConnectionChanged != null)
+            {
+                bool result = SambaAccessKeyFactory.Instance.CheckConnection();
+                if (result != IsConnected)
+                {
+                    onConnectionChanged(result);
+                }
+            }
+        }
+
+        internal void LoadCompleteSave()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool CheckConnection()
+        {
+            SambaAccessKeyFactory.Instance.CheckConnection(b => IsConnected = (bool)b);
+            return IsConnected;
+        }
+
+        internal void GenerateCompleteSave()
+        {
+            throw new NotImplementedException();
         }
     }
 }

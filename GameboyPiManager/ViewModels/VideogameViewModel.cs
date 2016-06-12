@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WPFUtilities.MVVM;
 using GameboyPiManager.Models;
+using System.Windows.Input;
 
 namespace GameboyPiManager.ViewModels
 {
@@ -23,9 +24,20 @@ namespace GameboyPiManager.ViewModels
             }
         }
 
-        public VideogameViewModel(Videogame model) 
+        public ICommand RemoveCmd { get; private set; }
+
+        private VideogameConsoleViewModel parent;
+
+        public VideogameViewModel(Videogame model, VideogameConsoleViewModel parent) 
             : base(model)
         {
+            this.parent = parent;
+            this.RemoveCmd = new Command(p => remove());
+        }
+
+        private void remove()
+        {
+            this.parent.RemoveVideogame(this);
         }
     }
 }

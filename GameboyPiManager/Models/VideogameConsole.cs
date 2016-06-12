@@ -84,8 +84,7 @@ namespace GameboyPiManager.Models
             try
             {
                 string pathToConsole = SambaAccessKeyFactory.Instance.GetAccessKey(Name);
-                File.Copy(path, pathToConsole);
-                
+                File.Copy(path, pathToConsole + "\\" + path.Split('\\').Last());
             }
             catch (Exception)
             {

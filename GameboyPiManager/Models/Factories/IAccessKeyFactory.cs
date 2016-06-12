@@ -12,5 +12,7 @@ namespace GameboyPiManager.Models.Factories
         void SetDevice(IDevice device);
         string GetAccessKey();
         string GetAccessKey(string path);
+        bool CheckConnection();
+        void CheckConnection(Func<object, bool> p);
     }
 }

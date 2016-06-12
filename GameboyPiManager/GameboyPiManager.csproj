@@ -59,10 +59,11 @@
     <Compile Include="Models\Factories\FileExtensionsFactory.cs" />
     <Compile Include="Models\Factories\IAccessKeyFactory.cs" />
     <Compile Include="Models\Factories\SambaAccessKeyFactory.cs" />
-    <Compile Include="Models\Interfaces\IGameboy.cs" />
+    <Compile Include="Models\Interfaces\IDevice.cs" />
     <Compile Include="Models\Interfaces\IUploadFile.cs" />
     <Compile Include="Models\Videogame.cs" />
     <Compile Include="ViewModels\GameboyViewModel.cs" />
+    <Compile Include="ViewModels\MenuViewModel.cs" />
     <Compile Include="ViewModels\VideogameConsoleViewModel.cs" />
     <Compile Include="ViewModels\VideogameViewModel.cs" />
     <Compile Include="Views\GameboyView.xaml.cs">
@@ -84,6 +85,22 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Views\GameboyView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Resources\GameboyListBoxItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Resources\ProjectDirectory.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Resources\MenuItemView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Resources\GameboyTreeViewItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

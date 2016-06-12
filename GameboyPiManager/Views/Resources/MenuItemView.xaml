@@ -1,0 +1,16 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:GameboyPiManager.Views.Resources"
+                    xmlns:viewModels="clr-namespace:GameboyPiManager.ViewModels">
+    
+    <HierarchicalDataTemplate DataType="{x:Type viewModels:MenuItemViewModel}"
+                                  ItemsSource="{Binding Path=Childrens}">
+    </HierarchicalDataTemplate>
+
+    <Style TargetType="{x:Type MenuItem}">
+        <Setter Property="Header" Value="{Binding Path=MenuHeader}"/>
+        <Setter Property="Command" Value="{Binding Path=MenuCommand}"/>
+    </Style>
+    
+    
+</ResourceDictionary>

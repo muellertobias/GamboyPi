@@ -8,6 +8,7 @@ using GameboyPiManager.Models;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Windows.Input;
+using System.Windows;
 
 namespace GameboyPiManager.ViewModels
 {
@@ -49,7 +50,7 @@ namespace GameboyPiManager.ViewModels
         public VideogameConsoleViewModel(VideogameConsole model) 
             : base(model)
         {
-            gamesVMs = new ObservableCollection<VideogameViewModel>(model.VideogameList.Select(m => new VideogameViewModel(m)));
+            gamesVMs = new ObservableCollection<VideogameViewModel>(model.VideogameList.Select(m => new VideogameViewModel(m, this)));
             gamesVMs.CollectionChanged += GamesVMs_CollectionChanged;
 
             AddVideogameCommand = new Command(consoleVM => addVideogame(consoleVM));
@@ -59,19 +60,26 @@ namespace GameboyPiManager.ViewModels
         {
             foreach (String p in paths)
             {
-                GamesVMs.Add(new VideogameViewModel(new Videogame(p)));
+                GamesVMs.Add(new VideogameViewModel(new Videogame(p), this));
             }
         }
 
         private void addVideogame(object consoleVM)
         {
-            if (consoleVM != null)
+
+        }
+
+
+        public void RemoveVideogame(VideogameViewModel videogameViewModel)
+        {
+            if (GamesVMs.Contains(videogameViewModel))
             {
-                
-            }
-            else
-            {
-                GamesVMs.Add(new VideogameViewModel(new Videogame(NewVideogameName)));
+                MessageBoxResult result = MessageBox.Show("Möchten Sie " + videogameViewModel.Model.Name + " wirklich löschen?", "Spiel löschen?", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (result == MessageBoxResult.Yes)
+                {
+                    Model.Remove(videogameViewModel.Model);
+                    GamesVMs.Remove(videogameViewModel);
+                }
             }
         }
 

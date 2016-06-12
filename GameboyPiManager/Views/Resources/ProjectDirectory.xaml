@@ -1,0 +1,9 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:GameboyPiManager.Views.Resources">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="MenuItemView.xaml"/>
+        <ResourceDictionary Source="GameboyTreeViewItem.xaml"/>
+        <ResourceDictionary Source="GameboyListBoxItem.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>

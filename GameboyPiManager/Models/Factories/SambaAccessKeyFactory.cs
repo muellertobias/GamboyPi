@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Net;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -57,6 +59,24 @@ namespace GameboyPiManager.Models.Factories
         public string GetAccessKey(string path)
         {
             return GetAccessKey() + "\\" + path;
+        }
+
+        public bool CheckConnection()
+        {
+            IPHostEntry host;
+            host = Dns.GetHostEntry(device.Name);
+            PingReply replay = new Ping().Send(host.HostName, 1000);
+            if (replay.Status == IPStatus.Success)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public void CheckConnection(Func<object, bool> p)
+        {
+            bool result = CheckConnection();
+            p.Invoke(result);
         }
     }
 }

@@ -10,9 +10,9 @@ namespace GameboyPiManager.Models
     {
         public String Name { get; set; }
 
-        public Videogame(String Name)
+        public Videogame(String path)
         {
-            this.Name = Name;
+            this.Name = path.Split('\\').Last();
         }
     }
 }

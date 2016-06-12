@@ -39,7 +39,6 @@ namespace GameboyPiManager.Views
         private void loadDataContext()
         {
             this.DataContext = new GameboyViewModel(model);
-            //this.DataContext = new VideogameConsoleViewModel(b.Consoles.First(c => c.Name == "\\\\GAMEBOYPI\\roms\\snes"));
         }
 
         private void DropzoneDrop(object sender, DragEventArgs e)
@@ -57,6 +56,16 @@ namespace GameboyPiManager.Views
             if (!e.Data.GetDataPresent(DataFormats.FileDrop, true))
             {
                 e.Effects = DragDropEffects.Move;
+            }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            var dataContext = this.DataContext as GameboyViewModel;
+
+            if (dataContext != null)
+            {
+                dataContext.IsConnected = !dataContext.IsConnected;
             }
         }
     }

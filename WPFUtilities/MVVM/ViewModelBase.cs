@@ -51,6 +51,12 @@ namespace WPFUtilities.MVVM
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
+
+        protected void OnPropertyChanged(Func<object> p)
+        {
+            string propertyName = p.GetMethodInfo().Name.Split('>').First().Split('_').Last();
+            OnPropertyChanged(propertyName);
+        }
     }
 
     public abstract class ViewModel<TModel> : ViewModel, IViewModel<TModel> where TModel : class
