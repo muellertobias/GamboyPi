@@ -47,5 +47,34 @@ namespace GameboyPiManager.Views
         {
             
         }
+
+        private void DownloadBackup(object sender, RoutedEventArgs e)
+        {
+            string selectedPath = getDestinationFolder();
+
+            var viewModel = this.DataContext as GameboyMainViewModel;
+            if (viewModel != null && selectedPath != string.Empty)
+            {
+                viewModel.DownloadBackupCmd.Execute(selectedPath);
+            }
+        }
+
+        private void UploadBackup(object sender, RoutedEventArgs e)
+        {
+            string selectedPath = getDestinationFolder();
+
+            var viewModel = this.DataContext as GameboyMainViewModel;
+            if (viewModel != null)
+            {
+                viewModel.UploadBackupCmd.Execute(selectedPath);
+            }
+        }
+
+        private string getDestinationFolder()
+        {
+            var dialog = new System.Windows.Forms.FolderBrowserDialog();
+            System.Windows.Forms.DialogResult result = dialog.ShowDialog();
+            return dialog.SelectedPath;
+        }
     }
 }

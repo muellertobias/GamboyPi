@@ -85,7 +85,7 @@ namespace GameboyPiManager.ViewModels
                 case NotifyCollectionChangedAction.Remove:
                     foreach (VideogameViewModel vm in e.OldItems)
                     {
-                        SambaConnection.Instance.RemoveFile(Name, vm.Name);
+                        SambaConnection.Instance.DeleteFile(Name, vm.Name);
                         Model.VideogameList.Remove(vm.Model);
                     }
                     break;

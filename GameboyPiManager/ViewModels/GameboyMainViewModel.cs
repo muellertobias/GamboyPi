@@ -71,8 +71,8 @@ namespace GameboyPiManager.ViewModels
             VideogameUploaderVM = new VideogameUploaderViewModel(model, this);
             VideogameUploaderVM.DoReload += new ReloadViewModelHandler(reload);
 
-            DownloadBackupCmd = new Command(c => Model.DownloadBackup());
-            UploadBackupCmd = new Command(c => Model.UploadBackup());
+            DownloadBackupCmd = new Command(selectedPath => Model.DownloadBackup(selectedPath as string));
+            UploadBackupCmd = new Command(selectedPath => Model.UploadBackup(selectedPath as string));
             
             ReloadCmd = new Command(p => reload());
             ConsolesVMs = new ObservableCollection<VideogameConsoleViewModel>();

@@ -14,8 +14,7 @@ using System.Threading.Tasks;
 namespace GameboyPiManager.Models
 {
     public class SambaConnection : IConnection
-    {
-        
+    { 
         #region Singleton
         private static IConnection instance;
         private static object padLock = new object();
@@ -39,7 +38,7 @@ namespace GameboyPiManager.Models
 
         private SambaConnection()
         {
-            PermanentConnectionCheckTimer = new Timer((x) => CheckConnection(), null, 0, 1000);
+            PermanentConnectionCheckTimer = new Timer(x => OnConnectionChanged(CheckConnection()), null, 0, 1000);
         }
 
         #endregion
@@ -56,6 +55,7 @@ namespace GameboyPiManager.Models
                 throw new ArgumentNullException();
             }
             this.device = gameboy;
+            this.isConnected = CheckConnection();
         }
 
         protected virtual void OnConnectionChanged(bool isConnected)
@@ -81,7 +81,7 @@ namespace GameboyPiManager.Models
             return GetAccessKey() + "\\" + path;
         }
 
-        private void CheckConnection()
+        private bool CheckConnection()
         {
             bool isConnected = false;
             try
@@ -95,7 +95,7 @@ namespace GameboyPiManager.Models
                 }
             }
             catch { }
-            OnConnectionChanged(isConnected);
+            return isConnected;
         }
 
         public IEnumerable<string> GetDirectories()
@@ -118,16 +118,56 @@ namespace GameboyPiManager.Models
             return Enumerable.Empty<string>();
         }
 
-        public void CopyFile(string destination, string filepath)
+        public void UploadFile(string destination, string filepath)
         {
             string pathToConsole = GetAccessKey(destination);
-            File.Copy(filepath, pathToConsole + "\\" + filepath.Split('\\').Last());
+            File.Copy(filepath, pathToConsole + "\\" + cutPathFromFilename(filepath));
         }
 
-        public void RemoveFile(string destination, string filename)
+        public void DeleteFile(string destination, string filename)
         {
             string pathToConsole = GetAccessKey(destination);
             File.Delete(pathToConsole + "\\" + filename);
+        }
+
+        public void DownloadFile(string source, string destination)
+        {
+            File.Copy(source, destination);
+        }
+
+        public void DownloadAllFiles(string source, string destination)
+        {
+            string pathToConsole = GetAccessKey(source);
+            IEnumerable<string> files = Directory.EnumerateFiles(pathToConsole);
+            files.ToList().ForEach(f => File.Copy(f, destination + "\\" + cutPathFromFilename(f)));
+        }
+
+        private string cutPathFromFilename(string completeFilepath)
+        {
+            return completeFilepath.Split('\\').Last();
+        }
+
+        public void UploadDirectory(string source)
+        {
+            //IEnumerable<string> directories =  Directory.GetFileSystemEntries(source);
+            this.Source = source;
+            uploadFiles(source);
+        }
+        private string Source;
+        private void uploadFiles(string source)
+        {
+            foreach (string sourceFile in Directory.EnumerateFiles(source))
+            {
+                //Console.WriteLine(file);
+                string destinationFile = GetAccessKey() + "\\" + sourceFile.Remove(0, Source.Length);
+                Console.WriteLine(destinationFile);
+                File.Copy(sourceFile, destinationFile);
+            }
+            var sourceDirectories = Directory.EnumerateDirectories(source);
+            foreach (string dir in sourceDirectories)
+            {
+                uploadFiles(dir);
+            }
         }
     }
 }

@@ -77,7 +77,7 @@ namespace GameboyPiManager.Models
         {
             try
             {
-                SambaConnection.Instance.CopyFile(Name, filepath);
+                SambaConnection.Instance.UploadFile(Name, filepath);
             }
             catch (Exception)
             {

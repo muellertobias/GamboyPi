@@ -17,7 +17,9 @@ namespace GameboyPiManager.Models
         //void CheckConnection(Func<object, bool> p);
         IEnumerable<string> GetDirectories();
         IEnumerable<string> GetFiles(string directoryName);
-        void CopyFile(string destination, string filepath);
-        void RemoveFile(string destination, string filename);
+        void UploadFile(string destination, string filepath);
+        void DeleteFile(string destination, string filename);
+        void DownloadAllFiles(string source, string destination);
+        void UploadDirectory(string source);
     }
 }

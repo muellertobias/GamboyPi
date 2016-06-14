@@ -58,12 +58,9 @@ namespace GameboyPiManager.Models
                         this.Consoles.Add(videoGameConsole.Name, videoGameConsole);
                     }
                 }
-
-                IsConnected = true;
             }
             catch (Exception)
             {
-                IsConnected = false;
             }
         }
         
@@ -81,15 +78,8 @@ namespace GameboyPiManager.Models
 
         public bool UploadFileToConsole(string filepath, string consoleName)
         {
-            try
-            {
-                IsConnected = Consoles[consoleName].UploadFile(filepath);
-            }
-            catch
-            {
-                return false;
-            }
-            return true;
+            bool successfull = Consoles[consoleName].UploadFile(filepath);
+            return successfull;
         }
 
 
@@ -98,14 +88,19 @@ namespace GameboyPiManager.Models
             SambaConnection.Instance.ConnectionChanged += new ConnectionHandler(action);
         }
         
-        public void UploadBackup()
+        public void UploadBackup(string source)
         {
-            throw new NotImplementedException();
+            SambaConnection.Instance.UploadDirectory(source);
         }
 
-        public void DownloadBackup()
+        public void DownloadBackup(string selectedPath)
         {
-            throw new NotImplementedException();
+            IConnection connection = SambaConnection.Instance;
+            foreach (VideogameConsole console in Consoles.Values)
+            {
+                var destination = selectedPath + "\\" + console.Name;
+                connection.DownloadAllFiles(console.Name, destination);
+            }
         }
     }
 }
