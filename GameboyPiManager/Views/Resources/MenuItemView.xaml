@@ -12,5 +12,4 @@
         <Setter Property="Command" Value="{Binding Path=MenuCommand}"/>
     </Style>
     
-    
 </ResourceDictionary>

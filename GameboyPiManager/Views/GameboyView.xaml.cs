@@ -2,11 +2,13 @@
 using GameboyPiManager.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -38,35 +40,12 @@ namespace GameboyPiManager.Views
 
         private void loadDataContext()
         {
-            this.DataContext = new GameboyViewModel(model);
+            this.DataContext = new GameboyMainViewModel(model);
         }
 
-        private void DropzoneDrop(object sender, DragEventArgs e)
+        private void ShowAboutPopup(object sender, RoutedEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop, true))
-            {
-                var paths = e.Data.GetData(DataFormats.FileDrop, true) as string[];
-                var viewModel = DataContext as GameboyViewModel;
-                viewModel.UploadFiles(paths);
-            }
-        }
-
-        private void DropzoneDragEnter(object sender, DragEventArgs e)
-        {
-            if (!e.Data.GetDataPresent(DataFormats.FileDrop, true))
-            {
-                e.Effects = DragDropEffects.Move;
-            }
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            var dataContext = this.DataContext as GameboyViewModel;
-
-            if (dataContext != null)
-            {
-                dataContext.IsConnected = !dataContext.IsConnected;
-            }
+            
         }
     }
 }

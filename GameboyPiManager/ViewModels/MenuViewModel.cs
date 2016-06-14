@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Shapes;
 using WPFUtilities.MVVM;
 
 namespace GameboyPiManager.ViewModels
@@ -27,6 +28,20 @@ namespace GameboyPiManager.ViewModels
             }
         }
 
+        private Path icon;
+        public Path Icon
+        {
+            get { return icon; }
+            set
+            {
+                if (Icon != value)
+                {
+                    icon = value;
+                    OnPropertyChanged(() => Icon);
+                }
+            }
+        }
+
         private ICommand menuCommand;
         public ICommand MenuCommand
         {
@@ -41,14 +56,15 @@ namespace GameboyPiManager.ViewModels
             }
         }
 
-        public MenuItemViewModel(string menuHeader)
+        public MenuItemViewModel(string menuHeader, Path icon)
         {
             this.menuHeader = menuHeader;
+            this.icon = icon;
             this.Childrens = new ObservableCollection<MenuItemViewModel>();
         }
 
-        public MenuItemViewModel(string menuHeader, ICommand menuCommand) 
-            : this(menuHeader)
+        public MenuItemViewModel(string menuHeader, Path icon, ICommand menuCommand) 
+            : this(menuHeader, icon)
         {
             this.menuCommand = menuCommand;
         }

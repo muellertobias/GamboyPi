@@ -4,7 +4,7 @@
                     xmlns:viewModels="clr-namespace:GameboyPiManager.ViewModels">
 
     <DataTemplate x:Key="VideogameConsoleListBoxItem" DataType="{x:Type viewModels:VideogameConsoleViewModel}">
-        <Border BorderBrush="Black" BorderThickness="1" Background="BurlyWood" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <TextBlock Text="{Binding Name}"/>
         </Border>
     </DataTemplate>

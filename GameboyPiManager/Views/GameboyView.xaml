@@ -18,11 +18,29 @@
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Menu>
-            <MenuItem Header="{Binding MenuVM.MenuHeader}" ItemsSource="{Binding MenuVM.Childrens}"/>
+            <MenuItem Header="System">
+                <MenuItem Header="Speichere Backup" Command="{Binding DownloadBackupCmd}">
+                    <MenuItem.Icon>
+                        <Path Stretch="Uniform" Fill="Black" Data="F1 M 90.2096,1.52588e-005L 108,17.7904L 108,40L 97.3333,40L 97.3333,22.2096L 85.7904,10.6667L 77.3333,10.6667L 77.3333,50.6667L 26.6667,50.6667L 26.6667,10.6667L 10.6667,10.6667L 10.6667,97.3333L 56.9479,97.3333L 66.5827,108L 0,108L 0,1.52588e-005L 90.2096,1.52588e-005 Z M 68,40L 68,10.6667L 57.3333,10.6667L 57.3333,40L 68,40 Z M 108,81.3334L 133.333,81.3334L 96,122.667L 58.6666,81.3334L 84,81.3334L 84,50.6667L 108,50.6667L 108,81.3334 Z "/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Wiederherstellen" Command="{Binding UploadBackupCmd}">
+                    <MenuItem.Icon>
+                        <Path Stretch="Uniform" Fill="Black" Data="F1 M 92.362,56.1133C 93.8282,57.8717 92.9765,60.7721 90.4336,60.7721L 80.461,60.7721L 80.461,103.953C 80.461,105.441 79.22,106.682 77.7318,106.682L 55.6016,106.682C 54.1133,106.682 52.8718,105.441 52.8718,103.953L 52.8718,60.7721L 42.8997,60.7721C 40.3575,60.7721 39.5052,57.8717 40.972,56.1133L 64.7376,27.5612C 65.3184,26.8627 66.0052,26.6081 66.6667,26.6536C 67.3282,26.6081 68.0131,26.8627 68.5964,27.5612L 92.362,56.1133 Z M 66.6667,0C 103.484,0 133.333,29.8476 133.333,66.6667C 133.333,103.486 103.484,133.333 66.6667,133.333C 29.8483,133.333 0,103.486 0,66.6667C 0,29.8476 29.8483,0 66.6667,0 Z M 66.6667,122.667C 97.5938,122.667 122.667,97.5938 122.667,66.6667C 122.667,35.739 97.5938,10.6667 66.6667,10.6667C 35.7389,10.6667 10.6667,35.739 10.6667,66.6667C 10.6667,97.5938 35.7389,122.667 66.6667,122.667 Z "/>
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Hilfe" Click="ShowAboutPopup">
+                <MenuItem Header="Über uns">
+                    <MenuItem.Icon>
+                        <Path Stretch="Uniform" Fill="Black" Data="F1 M 18.0011,25.9619L 13.3448,25.9619L 13.3448,12.9L 18.0011,12.9L 18.0011,25.9619 Z M 15.649,10.56C 14.8629,10.5387 14.2149,10.2495 13.7048,9.69214C 13.1948,9.13486 12.9308,8.43716 12.9128,7.59912C 12.9308,6.7876 13.1948,6.11328 13.7048,5.57608C 14.2149,5.03891 14.8629,4.76019 15.649,4.73999C 16.435,4.76022 17.0831,5.03891 17.5931,5.57611C 18.1031,6.11328 18.3671,6.7876 18.3851,7.59912C 18.3671,8.4595 18.1031,9.16357 17.5931,9.7113C 17.0831,10.259 16.435,10.5419 15.649,10.56 Z M 15.601,0C 11.1707,0.108398 7.49048,1.63821 4.56027,4.58942C 1.6301,7.54062 0.110046,11.2628 0,15.7559C 0.110046,20.0614 1.6301,23.666 4.56027,26.5695C 7.49045,29.4731 11.1707,30.9826 15.601,31.0981C 20.0102,30.9826 23.6844,29.4731 26.6236,26.5695C 29.5628,23.666 31.0889,20.0614 31.2019,15.7559C 31.0889,11.2628 29.5628,7.54062 26.6236,4.58942C 23.6844,1.63821 20.0102,0.108398 15.601,0 Z "/>
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
         </Menu>
         <TabControl Grid.Row="1">
             <TabItem Header="Übersicht">
-                <TreeView ItemsSource="{Binding ConsolesVMs}" ItemTemplate="{StaticResource VideogameConsoleTreeViewItem}">
+                <TreeView ItemsSource="{Binding ConsolesVMs}">
                     <TreeView.ItemContainerStyle>
                         <Style TargetType="TreeViewItem">
                             <Setter Property="Visibility" Value="{Binding GamesVMs.Count, Converter={StaticResource intToVisibilityConverter}}"/>
@@ -30,24 +48,16 @@
                     </TreeView.ItemContainerStyle>
                 </TreeView>
             </TabItem>
-            <TabItem Header="Spiel hinzufügen">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="50"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="25"/>
-                    </Grid.RowDefinitions>
-                    <Grid Background="LightGreen" AllowDrop="True" Drop="DropzoneDrop" DragEnter="DropzoneDragEnter" >
-                        <Label Content="Datei hier ablegen" FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    </Grid>
-                    <ListBox ItemsSource="{Binding SearchedConsolesVMs}" SelectedItem="{Binding SelectedVideogameConsole}" ItemTemplate="{StaticResource VideogameConsoleListBoxItem}" Grid.Row="1" HorizontalContentAlignment="Stretch"/>
-                    <Button Content="Hochladen" Command="{Binding UploadCmd}" IsDefault="True" Grid.Row="2"/>
-                </Grid>
+            <TabItem Header="Spiel hinzufügen" IsEnabled="{Binding IsConnected}">
+                <local:VideogameUploaderView DataContext="{Binding VideogameUploaderVM}"/>
             </TabItem>
         </TabControl>
         <StatusBar Grid.Row="2">
-            <StatusBarItem>
-                <TextBlock Text="{Binding StatusMessage}"/>
+            <StatusBarItem HorizontalAlignment="Left">
+                <!--<TextBlock Text="{Binding StatusMessage}"/>-->
+                <Button Command="{Binding ReloadCmd}" IsEnabled="{Binding IsConnected}">
+                    <Path Height="{Binding ActualHeight, ElementName=ConnectionViewer, Mode=OneWay}" Stretch="Uniform" UseLayoutRounding="False" Fill="Black" Data="F1 M 20.8105,7.09424L 24.2607,33.1177L 15.9209,29.6714C 14.2021,33.7583 13.251,38.2466 13.251,42.9595C 13.251,61.9429 28.6406,77.3267 47.6201,77.3267C 53.2109,77.3267 58.4854,75.9829 63.1504,73.6147L 69.4775,79.9419C 63.0732,83.7349 55.6025,85.9204 47.6201,85.9204C 23.8936,85.9204 4.6582,66.688 4.6582,42.9595C 4.6582,37.0845 5.84277,31.4888 7.98047,26.3901L 0,23.0913L 20.8105,7.09424 Z M 47.6191,0.000488281C 71.3457,0.000488281 90.5791,19.2368 90.5791,42.9604C 90.5791,47.8813 89.748,52.6089 88.2227,57.0112L 96.0176,60.3472L 75.0029,76.0845L 71.8828,50.0181L 80.2969,53.6187C 81.3936,50.2642 81.9883,46.6821 81.9883,42.9604C 81.9883,23.9771 66.5986,8.59326 47.6191,8.59326C 43.3438,8.59326 39.2559,9.38037 35.4814,10.8052L 28.9404,4.26318C 34.5898,1.53076 40.9238,0.000488281 47.6191,0.000488281 Z "/>
+                </Button>
             </StatusBarItem>
             <StatusBarItem HorizontalAlignment="Right">
                 <Rectangle x:Name="ConnectionViewer" Height="20" Width="20">
@@ -81,7 +91,6 @@
                     </Rectangle.Style>
                 </Rectangle>
             </StatusBarItem>
-            
         </StatusBar>
     </Grid>
 </UserControl>

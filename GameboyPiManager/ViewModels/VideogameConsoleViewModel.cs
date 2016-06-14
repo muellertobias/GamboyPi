@@ -31,7 +31,6 @@ namespace GameboyPiManager.ViewModels
         }
 
         private ObservableCollection<VideogameViewModel> gamesVMs;
-
         public ObservableCollection<VideogameViewModel> GamesVMs
         {
             get { return gamesVMs; }
@@ -45,15 +44,11 @@ namespace GameboyPiManager.ViewModels
             }
         }
 
-        public ICommand AddVideogameCommand { get; private set; }
-
         public VideogameConsoleViewModel(VideogameConsole model) 
             : base(model)
         {
             gamesVMs = new ObservableCollection<VideogameViewModel>(model.VideogameList.Select(m => new VideogameViewModel(m, this)));
             gamesVMs.CollectionChanged += GamesVMs_CollectionChanged;
-
-            AddVideogameCommand = new Command(consoleVM => addVideogame(consoleVM));
         }
 
         public void LoadNewVideogames(String[] paths)
@@ -64,12 +59,6 @@ namespace GameboyPiManager.ViewModels
             }
         }
 
-        private void addVideogame(object consoleVM)
-        {
-
-        }
-
-
         public void RemoveVideogame(VideogameViewModel videogameViewModel)
         {
             if (GamesVMs.Contains(videogameViewModel))
@@ -77,7 +66,7 @@ namespace GameboyPiManager.ViewModels
                 MessageBoxResult result = MessageBox.Show("Möchten Sie " + videogameViewModel.Model.Name + " wirklich löschen?", "Spiel löschen?", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 if (result == MessageBoxResult.Yes)
                 {
-                    Model.Remove(videogameViewModel.Model);
+                    //Model.VideogameList.Remove(videogameViewModel.Model);
                     GamesVMs.Remove(videogameViewModel);
                 }
             }
@@ -96,6 +85,7 @@ namespace GameboyPiManager.ViewModels
                 case NotifyCollectionChangedAction.Remove:
                     foreach (VideogameViewModel vm in e.OldItems)
                     {
+                        SambaConnection.Instance.RemoveFile(Name, vm.Name);
                         Model.VideogameList.Remove(vm.Model);
                     }
                     break;
@@ -103,6 +93,7 @@ namespace GameboyPiManager.ViewModels
                     Model.VideogameList.Clear();
                     break;
             }
+            OnPropertyChanged(() => Model);
         }
     }
 }

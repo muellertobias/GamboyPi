@@ -17,32 +17,31 @@ namespace GameboyPiManager.Models
 
         public FileExtensions FileExtensions { get; private set; }
 
-        public VideogameConsole(String path)
+        public VideogameConsole(String pathOrName, bool isName = false)
         {
-            this.Name = extractName(path);
+            if (isName)
+                this.Name = pathOrName;
+            else
+                this.Name = ExtractName(pathOrName);
+
             FileExtensions = FileExtensionsFactory.Instance.GetFileExtensions(Name);
-            loadVideogamesIfOnline();
-        }
-
-        public VideogameConsole(String name, FileExtensions fileExtensions)
-        {
-            this.Name = name;
-            this.FileExtensions = fileExtensions;
             this.VideogameList = new List<Videogame>();
+            loadVideogames();
         }
 
-        private void loadVideogamesIfOnline()
+        private void loadVideogames()
         {
             try
             {
-                this.VideogameList = new List<Videogame>();
+                //this.VideogameList.Clear();
 
-                string path = SambaAccessKeyFactory.Instance.GetAccessKey(Name);
-
-                var files = Directory.EnumerateFiles(path);
+                var files = SambaConnection.Instance.GetFiles(Name);
                 foreach (String file in files)
                 {
-                    this.VideogameList.Add(new Videogame(file));
+                    if (!VideogameList.Exists(v => v.Name.Equals(ExtractName(file))))
+                    {
+                        this.VideogameList.Add(new Videogame(file));
+                    }
                 }
             }
             catch (Exception)
@@ -51,17 +50,12 @@ namespace GameboyPiManager.Models
             }
         }
 
-        public void Add(Videogame game)
+        public void Reload()
         {
-            VideogameList.Add(game);
+            loadVideogames();
         }
 
-        public void Remove(Videogame game)
-        {
-            VideogameList.Remove(game);
-        }
-
-        private String extractName(String path)
+        public static String ExtractName(String path)
         {
             return path.Split('\\').Last();
         }
@@ -79,18 +73,33 @@ namespace GameboyPiManager.Models
             return false;
         }
 
-        public bool UploadFile(string path)
+        public bool UploadFile(string filepath)
         {
             try
             {
-                string pathToConsole = SambaAccessKeyFactory.Instance.GetAccessKey(Name);
-                File.Copy(path, pathToConsole + "\\" + path.Split('\\').Last());
+                SambaConnection.Instance.CopyFile(Name, filepath);
             }
             catch (Exception)
             {
                 return false;
             }
             return true;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+            if (obj == this)
+                return true;
+            VideogameConsole that = (VideogameConsole) obj;
+            return this.Name == that.Name
+                && this.VideogameList.Equals(that.VideogameList);
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Name.GetHashCode() + this.FileExtensions.GetHashCode() + this.VideogameList.GetHashCode();
         }
     }
 }

@@ -4,6 +4,5 @@
     {
         string Name { get; set; }
         bool IsConnected { get; set; }
-        bool CheckConnection();
     }
 }

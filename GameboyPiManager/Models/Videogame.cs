@@ -14,5 +14,21 @@ namespace GameboyPiManager.Models
         {
             this.Name = path.Split('\\').Last();
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+            if (obj == this)
+                return true;
+            Videogame that = (Videogame)obj;
+            return this.Name == that.Name;
+        }
+
+        public override int GetHashCode()
+        {
+            int hc = 12;
+            return hc + this.Name.GetHashCode();
+        }
     }
 }

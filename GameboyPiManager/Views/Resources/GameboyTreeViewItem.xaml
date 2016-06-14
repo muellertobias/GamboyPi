@@ -3,7 +3,7 @@
                     xmlns:local="clr-namespace:GameboyPiManager.Views.Resources"
                     xmlns:viewModels="clr-namespace:GameboyPiManager.ViewModels">
 
-    <HierarchicalDataTemplate x:Key="VideogameConsoleTreeViewItem" DataType="{x:Type viewModels:VideogameConsoleViewModel}" ItemsSource="{Binding GamesVMs}">
+    <HierarchicalDataTemplate DataType="{x:Type viewModels:VideogameConsoleViewModel}" ItemsSource="{Binding GamesVMs}">
         <Grid>
             <TextBlock Text="{Binding Name}"/>
         </Grid>
@@ -17,7 +17,11 @@
                     <Setter Property="ContextMenu">
                         <Setter.Value>
                             <ContextMenu>
-                                <MenuItem Header="Remove Game" Command="{Binding RemoveCmd}"/>
+                                <MenuItem Header="Remove Game" Command="{Binding RemoveCmd}">
+                                    <MenuItem.Icon>
+                                        <Path Stretch="Uniform" Fill="Black" Data="F1 M 48,34.6666L 58.6667,34.6666L 58.6667,117.333L 48,117.333L 48,34.6666 Z M 69.3332,34.6667L 79.9999,34.6667L 79.9999,117.333L 69.3332,117.333L 69.3332,34.6667 Z M 26.6666,34.6667L 37.3333,34.6667L 37.3333,117.333L 26.6666,117.333L 26.6666,34.6667 Z M 90.6667,13.3333C 99.4896,13.3333 106.667,20.5104 106.667,29.3333L 101.333,29.3333L 101.333,117.333C 101.333,126.156 94.1562,133.333 85.3333,133.333L 72,133.333L 34.6667,133.333L 21.3333,133.333C 12.5104,133.333 5.33331,126.156 5.33331,117.333L 5.33331,29.3333L 0,29.3333C 0,20.5104 7.17706,13.3333 16,13.3333L 25.3333,13.3333L 25.3333,12C 25.3333,4.82291 30.692,-3.05176e-005 38.6667,-3.05176e-005L 68,-3.05176e-005C 75.974,-3.05176e-005 81.3333,4.82291 81.3333,12L 81.3333,13.3333L 90.6667,13.3333 Z M 33.3333,12L 33.3333,13.3333L 73.3333,13.3333L 73.3333,12C 73.3333,9.34637 71.539,7.99997 68,7.99997L 38.6667,7.99997C 35.1282,7.99997 33.3333,9.34637 33.3333,12 Z M 85.3333,122.667C 88.2747,122.667 90.6667,120.275 90.6667,117.333L 90.6667,29.3333L 16,29.3333L 16,117.333C 16,120.275 18.3919,122.667 21.3333,122.667L 34.6667,122.667L 72,122.667L 85.3333,122.667 Z "/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
                             </ContextMenu>
                         </Setter.Value>
                     </Setter>
@@ -25,4 +29,5 @@
             </Grid.Style>
         </Grid>
     </DataTemplate>
+
 </ResourceDictionary>

@@ -17,7 +17,7 @@ namespace GameboyPiManager.Models
     public class Gameboy : IDevice
     {
         public Dictionary<string, VideogameConsole> Consoles { get; private set; }
-        private Timer PermanentConnectionCheckTimer;
+        
         public string Name { get; set; }
 
         public bool IsConnected { get; set; }
@@ -26,9 +26,8 @@ namespace GameboyPiManager.Models
         public Gameboy(string Name)
         {
             this.Name = Name;
-            SambaAccessKeyFactory.Instance.SetDevice(this);
+            SambaConnection.Instance.SetDevice(this);
             load();
-            PermanentConnectionCheckTimer = new Timer((x) => checkConnection(), null, 1000, 3000);
         }
 
         #endregion
@@ -43,30 +42,36 @@ namespace GameboyPiManager.Models
         {
             try
             {
-                string accessKey = SambaAccessKeyFactory.Instance.GetAccessKey();
-                IEnumerable<string> directories;
-                directories = Directory.EnumerateDirectories(accessKey);
+
+                IEnumerable<string> directories = SambaConnection.Instance.GetDirectories();
+
                 foreach (string directory in directories)
                 {
-                    var videoGameConsole = new VideogameConsole(directory);
-
-                    this.Consoles.Add(videoGameConsole.Name, videoGameConsole);
+                    string consoleName = VideogameConsole.ExtractName(directory);
+                    if (Consoles.Keys.Contains(consoleName))
+                    {
+                        Consoles[consoleName].Reload();
+                    }
+                    else
+                    {
+                        var videoGameConsole = new VideogameConsole(consoleName, true);
+                        this.Consoles.Add(videoGameConsole.Name, videoGameConsole);
+                    }
                 }
+
                 IsConnected = true;
             }
             catch (Exception)
             {
-                this.Consoles.Clear();
-                IEnumerable<string> consoleNames = FileExtensionsFactory.Instance.GetConsoleNames(String.Empty);
-                foreach (string consoleName in consoleNames)
-                {
-                    var videoGameConsole = new VideogameConsole(consoleName, FileExtensionsFactory.Instance.GetFileExtensions(consoleName));
-                    this.Consoles.Add(videoGameConsole.Name, videoGameConsole);
-                }
                 IsConnected = false;
             }
         }
         
+        public void Reload()
+        {
+            loadVideogameConsoles();
+        }
+
         public List<string> FindConsole(string filepath)
         {
             string fileExtension = filepath.Split('.').Last().ToLower();
@@ -88,36 +93,17 @@ namespace GameboyPiManager.Models
         }
 
 
-        private Action<bool> onConnectionChanged;
         public void SetOnConnectionChanged(Action<bool> action)
         {
-            this.onConnectionChanged = action;
+            SambaConnection.Instance.ConnectionChanged += new ConnectionHandler(action);
         }
-
-        private void checkConnection()
-        {
-            if (onConnectionChanged != null)
-            {
-                bool result = SambaAccessKeyFactory.Instance.CheckConnection();
-                if (result != IsConnected)
-                {
-                    onConnectionChanged(result);
-                }
-            }
-        }
-
-        internal void LoadCompleteSave()
+        
+        public void UploadBackup()
         {
             throw new NotImplementedException();
         }
 
-        public bool CheckConnection()
-        {
-            SambaAccessKeyFactory.Instance.CheckConnection(b => IsConnected = (bool)b);
-            return IsConnected;
-        }
-
-        internal void GenerateCompleteSave()
+        public void DownloadBackup()
         {
             throw new NotImplementedException();
         }

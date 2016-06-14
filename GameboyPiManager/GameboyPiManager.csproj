@@ -57,20 +57,25 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Models\Factories\FileExtensionsFactory.cs" />
-    <Compile Include="Models\Factories\IAccessKeyFactory.cs" />
-    <Compile Include="Models\Factories\SambaAccessKeyFactory.cs" />
+    <Compile Include="Models\IConnection.cs" />
+    <Compile Include="Models\SambaConnection.cs" />
     <Compile Include="Models\Interfaces\IDevice.cs" />
     <Compile Include="Models\Interfaces\IUploadFile.cs" />
     <Compile Include="Models\Videogame.cs" />
-    <Compile Include="ViewModels\GameboyViewModel.cs" />
+    <Compile Include="ViewModels\GameboyMainViewModel.cs" />
+    <Compile Include="ViewModels\Interfaces\IGameboyMain.cs" />
     <Compile Include="ViewModels\MenuViewModel.cs" />
     <Compile Include="ViewModels\VideogameConsoleViewModel.cs" />
+    <Compile Include="ViewModels\VideogameUploaderViewModel.cs" />
     <Compile Include="ViewModels\VideogameViewModel.cs" />
     <Compile Include="Views\GameboyView.xaml.cs">
       <DependentUpon>GameboyView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\VideogameConsoleView.xaml.cs">
       <DependentUpon>VideogameConsoleView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\VideogameUploaderView.xaml.cs">
+      <DependentUpon>VideogameUploaderView.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -105,6 +110,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\VideogameConsoleView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\VideogameUploaderView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
