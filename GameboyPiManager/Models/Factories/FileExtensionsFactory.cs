@@ -130,7 +130,35 @@ namespace GameboyPiManager.Models.Factories
         }
     }
 
-    public sealed class FileExtensions : List<string> { }
+    public sealed class FileExtensions : List<string>
+    {
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+            if (obj == this)
+                return true;
+            FileExtensions that = obj as FileExtensions;
+            if (that == null)
+                return false;
+            var diff1 = this.Except(that);
+            if (diff1.Count() != 0)
+                return false;
+            var diff2 = that.Except(this);
+            if (diff2.Count() != 0)
+                return false;
+            return true;
+        }
+        public override int GetHashCode()
+        {
+            int hash = 11;
+            foreach (string str in this)
+            {
+                hash += str.GetHashCode();
+            }
+            return hash;
+        }
+    }
 
     public interface IFileExtensionsFactory
     {
