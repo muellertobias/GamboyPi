@@ -14,7 +14,6 @@ namespace GameboyPiManager.Models
         event ConnectionHandler ConnectionChanged;
 
         void SetDevice(IDevice device);
-        //void CheckConnection(Func<object, bool> p);
         IEnumerable<string> GetDirectories();
         IEnumerable<string> GetFiles(string directoryName);
         void UploadFile(string destination, string filepath);

@@ -41,7 +41,6 @@ namespace GameboyPiManager.Views
             if (!e.Data.GetDataPresent(DataFormats.FileDrop, true))
             {
                 e.Effects = DragDropEffects.Copy;
-
             }
         }
     }

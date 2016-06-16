@@ -148,7 +148,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Views\Resources\Icon\icon.PNG" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\WPFUtilities\WPFUtilities.csproj">
       <Project>{d1bc910a-e242-4b29-a73a-ad43d09b2d80}</Project>
@@ -160,6 +162,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\FileExtensions.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Views\Resources\Icon\Icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
