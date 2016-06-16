@@ -64,7 +64,7 @@ namespace GameboyPiManager.Views
             string selectedPath = getDestinationFolder();
 
             var viewModel = this.DataContext as GameboyMainViewModel;
-            if (viewModel != null)
+            if (viewModel != null && selectedPath != string.Empty)
             {
                 viewModel.UploadBackupCmd.Execute(selectedPath);
             }

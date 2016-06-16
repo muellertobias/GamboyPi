@@ -38,10 +38,11 @@ namespace GameboyPiManager.Models
 
         private SambaConnection()
         {
-            PermanentConnectionCheckTimer = new Timer(x => OnConnectionChanged(CheckConnection()), null, 0, 1000);
+            PermanentConnectionCheckTimer = new Timer(x => OnConnectionChanged(checkConnection()), null, 0, 1000);
         }
 
         #endregion
+        private readonly string dirSeparator = "\\";
         private IDevice device;
         private bool isConnected;
         private Timer PermanentConnectionCheckTimer;
@@ -55,7 +56,7 @@ namespace GameboyPiManager.Models
                 throw new ArgumentNullException();
             }
             this.device = gameboy;
-            this.isConnected = CheckConnection();
+            this.device.IsConnected = this.isConnected = checkConnection();
         }
 
         protected virtual void OnConnectionChanged(bool isConnected)
@@ -73,15 +74,15 @@ namespace GameboyPiManager.Models
             {
                 throw new InvalidOperationException("Gerät wurde nicht spezifiziert. Es ist kein Zugriff möglich!");
             }
-            return ConfigurationManager.AppSettings.Get("SambaAccess") + device.Name + ConfigurationManager.AppSettings.Get("ROMsDir");
+            return string.Format("{0}{1}{2}", ConfigurationManager.AppSettings.Get("SambaAccess"), device.Name, ConfigurationManager.AppSettings.Get("ROMsDir"));
         }
 
         private string GetAccessKey(string path)
         {
-            return GetAccessKey() + "\\" + path;
+            return GetAccessKey() + dirSeparator + path;
         }
 
-        private bool CheckConnection()
+        private bool checkConnection()
         {
             bool isConnected = false;
             try
@@ -96,6 +97,31 @@ namespace GameboyPiManager.Models
             }
             catch { }
             return isConnected;
+        }
+
+        private void uploadFiles(string source, ref string sourceRoot)
+        {
+            foreach (string sourceFile in Directory.EnumerateFiles(source))
+            {
+                string destinationFile = GetAccessKey() + sourceFile.Remove(0, sourceRoot.Length);
+                Console.WriteLine(destinationFile);
+                File.Copy(sourceFile, destinationFile);
+            }
+            var sourceDirectories = Directory.EnumerateDirectories(source);
+            foreach (string dir in sourceDirectories)
+            {
+                uploadFiles(dir, ref sourceRoot);
+            }
+        }
+
+        private string cutPathFromFilename(string completeFilepath)
+        {
+            return completeFilepath.Split(dirSeparator.ToCharArray()).Last();
+        }
+
+        private string getFilepath(string path, string filename)
+        {
+            return string.Format("{0}{1}{2}", path, dirSeparator, filename);
         }
 
         public IEnumerable<string> GetDirectories()
@@ -121,13 +147,13 @@ namespace GameboyPiManager.Models
         public void UploadFile(string destination, string filepath)
         {
             string pathToConsole = GetAccessKey(destination);
-            File.Copy(filepath, pathToConsole + "\\" + cutPathFromFilename(filepath));
+            File.Copy(filepath, getFilepath(pathToConsole, cutPathFromFilename(filepath)));
         }
 
         public void DeleteFile(string destination, string filename)
         {
             string pathToConsole = GetAccessKey(destination);
-            File.Delete(pathToConsole + "\\" + filename);
+            File.Delete(getFilepath(pathToConsole, filename));
         }
 
         public void DownloadFile(string source, string destination)
@@ -139,35 +165,14 @@ namespace GameboyPiManager.Models
         {
             string pathToConsole = GetAccessKey(source);
             IEnumerable<string> files = Directory.EnumerateFiles(pathToConsole);
-            files.ToList().ForEach(f => File.Copy(f, destination + "\\" + cutPathFromFilename(f)));
+            files.ToList().ForEach(file => File.Copy(file, getFilepath(destination, cutPathFromFilename(file))));
         }
-
-        private string cutPathFromFilename(string completeFilepath)
-        {
-            return completeFilepath.Split('\\').Last();
-        }
-
+        
         public void UploadDirectory(string source)
         {
-            //IEnumerable<string> directories =  Directory.GetFileSystemEntries(source);
-            this.Source = source;
-            uploadFiles(source);
-        }
-        private string Source;
-        private void uploadFiles(string source)
-        {
-            foreach (string sourceFile in Directory.EnumerateFiles(source))
-            {
-                //Console.WriteLine(file);
-                string destinationFile = GetAccessKey() + "\\" + sourceFile.Remove(0, Source.Length);
-                Console.WriteLine(destinationFile);
-                File.Copy(sourceFile, destinationFile);
-            }
-            var sourceDirectories = Directory.EnumerateDirectories(source);
-            foreach (string dir in sourceDirectories)
-            {
-                uploadFiles(dir);
-            }
+            // Argument wird 2 mal übegeben, da das 2. Argument die Wurzel (also die ursprüngliche Source ist) 
+            // und das 1. Argument sich durch die Rekursion von uploadFiles ändert.
+            uploadFiles(source, ref source);
         }
     }
 }
