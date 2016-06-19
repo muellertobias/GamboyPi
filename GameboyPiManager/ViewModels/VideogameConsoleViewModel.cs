@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Windows.Input;
 using System.Windows;
+using GameboyPiManager.Models.SambaAccess;
 
 namespace GameboyPiManager.ViewModels
 {

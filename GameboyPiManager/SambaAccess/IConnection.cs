@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameboyPiManager.Models
+namespace GameboyPiManager.Models.SambaAccess
 {
     public delegate void ConnectionHandler(bool isConnected);
 
@@ -18,7 +18,7 @@ namespace GameboyPiManager.Models
         IEnumerable<string> GetFiles(string directoryName);
         void UploadFile(string destination, string filepath);
         void DeleteFile(string destination, string filename);
-        void DownloadAllFiles(string source, string destination);
-        void UploadDirectory(string source);
+        bool UploadDirectory(string source);
+        bool DownloadDirectory(string destination);
     }
 }

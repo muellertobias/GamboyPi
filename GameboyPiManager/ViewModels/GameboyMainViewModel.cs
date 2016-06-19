@@ -13,6 +13,7 @@ using System.Collections.Specialized;
 using System.Windows.Shapes;
 using System.Windows.Media;
 using GameboyPiManager.ViewModels.Interfaces;
+using System.ComponentModel;
 
 namespace GameboyPiManager.ViewModels
 {
@@ -22,6 +23,10 @@ namespace GameboyPiManager.ViewModels
         public ICommand DownloadBackupCmd { get; private set; }
         public ICommand UploadBackupCmd { get; private set; }
         public ICommand ReloadCmd { get; private set; }
+
+        private BackgroundWorker downloadWorker;
+        private BackgroundWorker uploadWorker;
+
         private string statusMessage;
         public string StatusMessage
         {
@@ -62,7 +67,6 @@ namespace GameboyPiManager.ViewModels
                 }
             }
         }
-
        
         #region Contructor
         public GameboyMainViewModel(Gameboy model) 
@@ -71,14 +75,63 @@ namespace GameboyPiManager.ViewModels
             VideogameUploaderVM = new VideogameUploaderViewModel(model, this);
             VideogameUploaderVM.DoReload += new ReloadViewModelHandler(reload);
 
-            DownloadBackupCmd = new Command(selectedPath => Model.DownloadBackup(selectedPath as string));
-            UploadBackupCmd = new Command(selectedPath => Model.UploadBackup(selectedPath as string));
+            createBackgroundWorker();
+
+            DownloadBackupCmd = new Command(selectedPath => downloadWorker.RunWorkerAsync(selectedPath));
+            UploadBackupCmd = new Command(selectedPath => uploadWorker.RunWorkerAsync(selectedPath));
             
             ReloadCmd = new Command(p => reload());
             ConsolesVMs = new ObservableCollection<VideogameConsoleViewModel>();
             createConsolesVMs();
             ConsolesVMs.CollectionChanged += (s, e) => OnPropertyChanged(() => ConsolesVMs);
             Model.SetOnConnectionChanged(SetIsConnection);
+        }
+
+        private void createBackgroundWorker()
+        {
+            downloadWorker = new BackgroundWorker();
+            downloadWorker.DoWork += DownloadWorker_DoWork;
+            downloadWorker.RunWorkerCompleted += DownloadWorker_RunWorkerCompleted;
+
+            uploadWorker = new BackgroundWorker();
+            uploadWorker.DoWork += UploadWorker_DoWork;
+            uploadWorker.RunWorkerCompleted += UploadWorker_RunWorkerCompleted;
+        }
+
+        private void DownloadWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            Model.DownloadBackup(e.Argument as string, isCompleted => e.Result = isCompleted);
+        }
+
+        private void DownloadWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            bool successfulDownload = (bool)e.Result;
+            if (successfulDownload)
+            {
+                StatusMessage = "Download completed!";
+            }
+            else
+            {
+                StatusMessage = "Download was not completed. Please check logging.";
+            }
+        }
+
+        private void UploadWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            Model.UploadBackup(e.Argument as string, isCompleted => e.Result = isCompleted);
+        }
+
+        private void UploadWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            bool successfulDownload = (bool)e.Result;
+            if (successfulDownload)
+            {
+                StatusMessage = "Upload completed!";
+            }
+            else
+            {
+                StatusMessage = "Upload was not completed. Please check logging.";
+            }
         }
 
         private void createConsolesVMs()
@@ -96,9 +149,13 @@ namespace GameboyPiManager.ViewModels
             this.IsConnected = isConnected;
         }
 
+        private void OnDownloadFinished()
+        {
+            StatusMessage = "Download completed!";
+        }
+
         private void reload()
         {
-            //ConsolesVMs.CollectionChanged(this, )
             Model.Reload();
             createConsolesVMs();
         }

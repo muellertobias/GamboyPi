@@ -11,6 +11,8 @@ using GameboyPiManager.Models.Factories;
 using System.Xml;
 using System.Net.NetworkInformation;
 using System.Threading;
+using GameboyPiManager.Models.SambaAccess;
+using WPFUtilities.Logging;
 
 namespace GameboyPiManager.Models
 {
@@ -59,8 +61,9 @@ namespace GameboyPiManager.Models
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                LoggerDecorator.Instance.Log(ex.Message);
             }
         }
         
@@ -88,19 +91,16 @@ namespace GameboyPiManager.Models
             SambaConnection.Instance.ConnectionChanged += new ConnectionHandler(action);
         }
         
-        public void UploadBackup(string source)
+        public void UploadBackup(string source, Action<bool> onUploadFinished)
         {
-            SambaConnection.Instance.UploadDirectory(source);
+            bool successful = SambaConnection.Instance.UploadDirectory(source);
+            onUploadFinished(successful);
         }
 
-        public void DownloadBackup(string selectedPath)
+        public void DownloadBackup(string destination, Action<bool> onDownloadFinished)
         {
-            IConnection connection = SambaConnection.Instance;
-            foreach (VideogameConsole console in Consoles.Values)
-            {
-                var destination = selectedPath + "\\" + console.Name;
-                connection.DownloadAllFiles(console.Name, destination);
-            }
+            bool successful = SambaConnection.Instance.DownloadDirectory(destination);
+            onDownloadFinished.Invoke(successful);
         }
     }
 }

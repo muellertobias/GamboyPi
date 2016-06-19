@@ -7,6 +7,8 @@ using System.Xml;
 using System.IO;
 using GameboyPiManager.Models.Factories;
 using GameboyPiManager.Models.Interfaces;
+using GameboyPiManager.Models.SambaAccess;
+using WPFUtilities.Logging;
 
 namespace GameboyPiManager.Models
 {
@@ -44,9 +46,9 @@ namespace GameboyPiManager.Models
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                LoggerDecorator.Instance.Log(ex.Message);
             }
         }
 
@@ -60,27 +62,15 @@ namespace GameboyPiManager.Models
             return path.Split('\\').Last();
         }
 
-        public bool checkFile(string path)
-        {
-            foreach (String fileEnd in FileExtensions)
-            {
-                if (path.Split('.').Last().Equals(fileEnd))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
         public bool UploadFile(string filepath)
         {
             try
             {
                 SambaConnection.Instance.UploadFile(Name, filepath);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                LoggerDecorator.Instance.Log(ex.Message);
                 return false;
             }
             return true;

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using WPFUtilities.Logging;
 
 namespace GameboyPiManager.Models.Factories
 {
@@ -47,10 +48,7 @@ namespace GameboyPiManager.Models.Factories
             {
                 return consolesFileExtensionsDictionary[consoleName];
             }
-            catch (Exception)
-            {
-
-            }
+            catch (Exception) { }
             return new FileExtensions();
         }
 
@@ -63,15 +61,15 @@ namespace GameboyPiManager.Models.Factories
 
             try
             {
-                
                 return fileExtensionConsoleDictionary[fileExtension];
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                LoggerDecorator.Instance.Log(ex.Message);
             }
             return new List<string>();
         }
+
         private void load()
         {
             readFileExtensions();
